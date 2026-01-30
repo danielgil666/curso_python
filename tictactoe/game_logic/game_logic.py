@@ -16,6 +16,7 @@ def check_winner(d:dict, combo_list:list)->bool:
             return True
     return False
 def game()->str:
+
     """
     Here lives the main game logic
     """
@@ -31,13 +32,13 @@ def game()->str:
     current_player = x_player
     winner=False
     w_player=""
-    while turn < 9:
+    while turn < 9 and not winner:
         board.display_board(dboard)
         valid_move = False
         while not valid_move:
             valid_move = board.player_turn(current_player, dboard)
         turn += 1
-        w= check_winner(dboard,combo_list)
+        winner= check_winner(dboard,combo_list)
         if winner:
             w_player=current_player
         if current_player == x_player:
@@ -50,6 +51,24 @@ def game()->str:
              #       print(f"Winner:Player{w_player}")
             #else:
               #      print(f"It's a tie!")
+
+def two_players():
+        """ Main Function to start the game
+        """
+        playing = True
+        score = {'x':0, 'O':0, 'Ties':0}
+        while playing:
+            winner = game()
+            if len(winner) > 0:
+                print(f"Winner: player {winner}")
+        else:
+            print("It's a tie!")
+            winner = 'Ties'
+        score[winner] += 1
+        replay = input ("Do you want to play again? (y/n): ").strip().lower()
+        if replay != 'y':
+            playing = False       
+        print(f"Score: X = {score['x']}, O = {score['O']}, Ties = {score['Ties']}")
 
 if __name__ == "__main__":
     win=game()
