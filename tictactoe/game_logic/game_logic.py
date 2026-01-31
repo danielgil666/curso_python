@@ -6,6 +6,7 @@ Author:Daniel Gil Cota
 Here goes the game logic for Tictactoe
 """
 import board
+import random
 
 def check_winner(d:dict, combo_list:list)->bool:
     """
@@ -20,7 +21,7 @@ def game()->str:
     """
     Here lives the main game logic
     """
-    turn = 0
+    turns = 0
     dboard = {x:str(x) for x in range(9)}
     combo_list = [
         [0,1,2], [3,4,5], [6,7,8], # rows
@@ -32,7 +33,7 @@ def game()->str:
     current_player = x_player
     winner=False
     w_player=""
-    while turn < 9 and not winner:
+    while turns < 9 and not winner:
         board.display_board(dboard)
         valid_move = False
         while not valid_move:
@@ -48,32 +49,76 @@ def game()->str:
     board.display_board(board)
     return w_player
             #if winner:
-             #       print(f"Winner:Player{w_player}")
+            #       print(f"Winner:Player{w_player}")
             #else:
-              #      print(f"It's a tie!")
+            #      print(f"It's a tie!")
 
-def two_players():
-        """ Main Function to start the game
-        """
+def play_game(players=2)->None:
+    """ Main Function to start the game
+    """
+    if players ==1:
+        playing=True
+        print("One player mode is not implemented yet.")
+        return
+    else:
         playing = True
         score = {'x':0, 'O':0, 'Ties':0}
         while playing:
-            winner = game()
+            if players ==1:
+                    winner = game_vs_computer()
+            else:
+                    winner=game()
             if len(winner) > 0:
-                print(f"Winner: player {winner}")
-        else:
-            print("It's a tie!")
-            winner = 'Ties'
+                        print(f"Winner: player {winner}")
+            else:
+                    print("It's a tie!")
+                    winner = 'Ties'
         score[winner] += 1
         replay = input ("Do you want to play again? (y/n): ").strip().lower()
         if replay != 'y':
-            playing = False       
+                    playing = False       
         print(f"Score: X = {score['x']}, O = {score['O']}, Ties = {score['Ties']}")
+            
+def game_vs_computer()->str:
+    turns = 0
+    dboard = {x:str(x) for x in range(9)}
+    combo_list = [
+    [0,1,2], [3,4,5], [6,7,8], # rows
+    [0,3,6], [1,4,7], [2,5,8], # columns
+    [0,4,8], [2,4,6]           # diagonals
+    ]
+    x_player = 'X'
+    o_player = 'O'
+    current_player = x_player
+    w_player=""
+    winner=False
 
-if __name__ == "__main__":
-    win=game()
-    if len(win)>0:
-         printf(f"Winner:Player{win}")
-    else:
-         printf(f"It's a tie!")
-    
+    while turns < 9 and not winner:
+        board.display_board(dboard)
+        valid_move = False
+        if current_player==x_player:
+            while not valid_move:
+                    valid_move = board.player_turn(current_player, dboard)
+        else:
+            print("Computer's turn:")
+            while not valid_move:
+                move =random.randint(0,8)
+                if str(dboard[move])==str(move):
+                    dboard[move]=o_player
+                    valid_move=True
+        turns += 1
+        winner= check_winner(dboard,combo_list)
+        if winner:
+                    w_player=current_player
+        if current_player == x_player:
+                    current_player = o_player
+        else:
+           current_player = x_player
+    board.display_board(board)
+                
+    return w_player
+                      
+
+
+    if __name__ == "__main__":
+        play_game(2)
