@@ -2,7 +2,7 @@
 Author:Daniel Gil Cota
 """
 
-from game_logic import game
+#from game_logic import game
 from game_logic import two_players
 from menu import display_menu
 
