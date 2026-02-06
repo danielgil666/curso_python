@@ -1,12 +1,10 @@
-
-
-
 """
+Docstring for game_logic
 Author:Daniel Gil Cota
 Here goes the game logic for Tictactoe
 """
-import board
 import random
+import board
 
 def check_winner(d:dict, combo_list:list)->bool:
     """
@@ -16,10 +14,10 @@ def check_winner(d:dict, combo_list:list)->bool:
         if d[combo[0]] == d[combo[1]] == d[combo[2]]:
             return True
     return False
-def game(num_players:int)->str:
 
+def game(num_players:int)->str:
     """
-    Here lives the main game logic
+    Here lives the main game loop
     """
     turns = 0
     dboard = {x:str(x) for x in range(9)}
@@ -31,122 +29,71 @@ def game(num_players:int)->str:
     x_player = 'X'
     o_player = 'O'
     current_player = x_player
-    winner=False
-    w_player=""
+    winner = False
+    w_player = ""
     while turns < 9 and not winner:
         board.display_board(dboard)
-        if num_players==1:
+        if num_players == 1:
             one_player(current_player, dboard)
-        if num_players==2:
-            two_player(current_player, dboard)
+        else:
+            if num_players == 2:
+                two_player(current_player, dboard)
         turns += 1
-        winner= check_winner(dboard,combo_list)
+        winner = check_winner(dboard, combo_list)
         if winner:
-            w_player=current_player
+            w_player = current_player
         if current_player == x_player:
             current_player = o_player
         else:
             current_player = x_player
-    board.display_board(board)
+    board.display_board(dboard)
     return w_player
-            #if winner:
-            #       print(f"Winner:Player{w_player}")
-            #else:
-            #      print(f"It's a tie!")
+    #if winner:
+    #    print(f"Winner: Player {w_player}")
+    #else:
+    #    print(f"It's a tie!")
 
 def play_game(players=2)->None:
-    """ Main Function to start the game
+    """ Two players game loop
     """
-    if players ==1:
-        playing=True
-        print("One player mode is not implemented yet.")
-        return
-    else:
-        playing = True
-        score = {'x':0, 'O':0, 'Ties':0}
-        while playing:
-        
-         winner=game(players)
+    playing = True
+    score = {'X':0, 'O':0, 'Ties':0}
+    while playing: 
+        winner = game(players)
         if len(winner) > 0:
-                        print(f"Winner: player {winner}")
+            print(f"Winner: Player {winner}")
         else:
             print("It's a tie!")
             winner = 'Ties'
         score[winner] += 1
-        replay = input ("Do you want to play again? (y/n): ").strip().lower()
+        replay = input("Do you want to play again? (y/n): ").strip().lower()
         if replay != 'y':
-            playing = False       
-        print(f"Score: X = {score['x']}, O = {score['O']}, Ties = {score['Ties']}")
+            playing = False
+        print(f"Score: X = {score['X']}, O = {score['O']}, Ties = {score['Ties']}")
 
-def one_player(current_player:str,dboard:dict)->None:
-     
-    """One player vs computer game loop"""
-
-    valid_move=False
-    x_player='X'
-    o_player='O'
-    if current_player==x_player:
+def one_player(current_player:str, dboard:dict)->None:
+    """ One player vs computer game loop
+    """
+    valid_move = False
+    x_player = 'X'
+    o_player = 'O'
+    if current_player == x_player:
         while not valid_move:
-                valid_move = board.player_turn(current_player, dboard)
+            valid_move = board.player_turn(current_player, dboard)
     else:
         print("Computer's turn:")
         while not valid_move:
-            move =random.randint(0,8)
-            if str(dboard[move])==str(move):
-                dboard[move]=o_player
-                valid_move=True
+            move = random.randint(0,8)
+            if str(dboard[move]) == str(move):
+                dboard[move] = o_player
+                valid_move = True
 
-def two_player(current_player:str,dboard:dict)->None:
-     
-    """
-    Two players game loop
-    """
-
-    valid_move=False
+def two_player(current_player:str, dboard:dict)->None:
+    """ Two players game loop"""
+    valid_move = False
     while not valid_move:
         valid_move = board.player_turn(current_player, dboard)
-                                    
-def game_vs_computer()->str:
-    turns = 0
-    dboard = {x:str(x) for x in range(9)}
-    combo_list = [
-    [0,1,2], [3,4,5], [6,7,8], # rows
-    [0,3,6], [1,4,7], [2,5,8], # columns
-    [0,4,8], [2,4,6]           # diagonals
-    ]
-    x_player = 'X'
-    o_player = 'O'
-    current_player = x_player
-    w_player=""
-    winner=False
-
-    while turns < 9 and not winner:
-        board.display_board(dboard)
-        valid_move = False
-        if current_player==x_player:
-            while not valid_move:
-                    valid_move = board.player_turn(current_player, dboard)
-        else:
-            print("Computer's turn:")
-            while not valid_move:
-                move =random.randint(0,8)
-                if str(dboard[move])==str(move):
-                    dboard[move]=o_player
-                    valid_move=True
-        turns += 1
-        winner= check_winner(dboard,combo_list)
-        if winner:
-                    w_player=current_player
-        if current_player == x_player:
-                    current_player = o_player
-        else:
-           current_player = x_player
-    board.display_board(board)
-                
-    return w_player
-                      
-
 
 if __name__ == "__main__":
-         play_game(1)
-       
+    play_game(1)
+    
