@@ -1,12 +1,13 @@
 """ 
 | Athlete class representing a player in the tournament. | """
 import random
+
 class  Athlete:
     """ Athlete class representing a player in the tournament. """
     def __init__(self, name):
         """ Custom constructor for Athlete class. """
         self.name = name
-        self.number=random.randint(1,99) 
+        self.number= random.randint(1, 99)  # Assign a random number to the athlete
     def __str__(self):
         """ String representation of the Athlete object. """
         return f"Athlete: {self.name}, Number: {self.number}"
