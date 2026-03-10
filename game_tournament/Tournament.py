@@ -7,7 +7,7 @@ from Game import Game
 from Team import Team
 from Sport import Sport
 from Athlete import Athlete
-from group import Group
+from Group import Group
 
 class Tournament:
     """ Tournament class represents a tournament. It has a name, a list of games, and a list of teams. """
@@ -17,29 +17,24 @@ class Tournament:
         self.games = []
         self.teams = []
         self.groups = {}
-
     def add_team(self, team):
         """ Add a team to the tournament. """
         if isinstance(team, Team):
             self.teams.append(team)
         else:
             raise ValueError("Only Team objects can be added as a team.")
-        
     def add_game(self, game):
         """ Add a game to the tournament. """
         if isinstance(game, Game):
             self.games.append(game)
         else:
             raise ValueError("Only Game objects can be added as a game.") 
-        
     def __str__(self):
         """ String representation of the Tournament class. """
         return f"Tournament: {self.name}, Teams: {len(self.teams)}, Games: {len(self.games)}"
-    
     def __repr__(self):
         """ String representation of the Tournament class. """
         return f"Tournament(name={self.name}, teams={repr(self.teams)}, games={repr(self.games)})"
-    
     def to_json(self):
         """ Convert the Tournament object to a JSON string. """
         return {
@@ -47,7 +42,6 @@ class Tournament:
             "teams": [team.to_json() for team in self.teams],
             "games": [game.to_json() for game in self.games]
         }
-    
     def set_group(self, group_list, group_name):
         """ Set the group for each team in the tournament. """
         group = Group(group_name)
@@ -55,7 +49,6 @@ class Tournament:
             group.add_team(team)
         group.add_games()
         self.groups[group_name] = group
-
     def set_group_stage(self):
         """ Set the group stage """
         if len(self.teams) == 8:
@@ -66,7 +59,6 @@ class Tournament:
             self.set_group(group_a, "Group A")
             # Create games for group B
             self.set_group(group_b, "Group B")
-
     def load_json(self, filename):
         """ Load a Tournament object from a JSON file."""
         print("Tournament")
@@ -83,20 +75,49 @@ class Tournament:
                 for player in players:
                     team.add_athlete(Athlete(player))
                 self.add_team(team)
-
     def display_tournament(self):
         """ Display the tournament. """
         print(f"Tournament: {self.name}")
         for group in self.groups:
             self.groups[group].display_group()
+        self.display_games()
+    def display_games(self):
+        """ Display the games. """
         for group in self.groups:
             self.groups[group].display_group_games()
-
+    def play_games(self):
+        """ Play the games. """
+        for group in self.groups:
+            self.groups[group].play_group_games()
+        self.display_games()
+        self.display_standings()
+        self.set_knockout_stage()
+    def display_standings(self):
+        """ Display the standings of the tournament. """
+        for group in self.groups:
+            self.groups[group].display_standings()
+    def get_qualified_teams(self):
+        """ Get the qualified teams for the next stage. """
+        qualified_teams = []
+        for group in self.groups:
+            qualified_teams.append(self.groups[group].get_qualified_teams())  # First place
+        return qualified_teams 
+    
+    def set_knockout_stage(self):
+        """ Set the knockout stage. """
+        qualified_teams = self.get_qualified_teams()
+        self.set_knockout_stage=[]
+        self.set_knockout_stage.append(qualified_teams[0][0],qualified_teams[1][1])  # First place of Group A
+        self.set_knockout_stage.append(qualified_teams[1][0],qualified_teams[0][1])  # First place of Group B
+        print(self.set_knockout_stage)
+    
 if __name__ == "__main__":
     tournament = Tournament("FIFA World Cup")
     tournament.load_json("tournament.json")
     tournament.set_group_stage()
     tournament.display_tournament()
+   # tournament.set_games()
+    tournament.display_games()
     #print(tournament.groups['Group A'].games)
     #print(tournament.groups['Group B'].games)
    # print(tournament)
