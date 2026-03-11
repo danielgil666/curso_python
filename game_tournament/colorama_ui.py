@@ -33,11 +33,15 @@ class ColoramaUI:
                 self.exit_app()
             else:
                 print("Invalid choice. Please try again.")
-    def open_tournament(self):
+    def open_tournament(self): # Quité el parámetro file_path
         """ Open tournament from JSON file """
+        if not self.current_file:
+            print("No hay archivo seleccionado.")
+            return
         self.tournament = Tournament("Tournament")
         self.tournament.load_json(self.current_file)
         self.tournament.set_group_stage()
+        
     def display_tournament(self):
         """ Display tournament """
         # Set colors before clearing screen to fill background

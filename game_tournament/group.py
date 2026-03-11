@@ -85,14 +85,12 @@ class Group:
                 self.points[game.team_b]["goal_difference"] += game.score[game.team_b.name] - game.score[game.team_a.name]
     def display_standings(self):
         """ Display the standings of the group. """
-        dsort=sorted(self.points.items(), key=lambda x: x[1]['points'], reverse=True)
+        dsort = sorted(self.points.items(), key=lambda x: x[1]["points"], reverse=True) #sort by points
         print(f"Group: {self.name}")
         print(f"{'Team':<20} {'Pts':<2} {'W':<2} {'L':<2} {'D':<2} {'GF':<2} {'GA':<2} {'GD':<2}")
         for team, stats in dsort:
-            print(f"{str(team.name):<20} {stats['points']:2} {stats['wins']:2} {stats['losses']:2} {stats['draws']:2} {stats['goals_for']}:{stats['goals_against']} {stats['goal_difference']:2}")
-
-            def get_qualified_teams(self):
-                """ Get the qualified teams from the group. """
-                sorted_teams = sorted(self.points.items(), key=lambda x: x[1]['points'], reverse=True)
-                qualified_teams = [team for team, stats in sorted_teams[:2]]  # Get top 2 teams
-                return [team for team ,stats in dsort[2:]]
+            print(f"{str(team.name):<20} {stats['points']:2} {stats['wins']:2} {stats['losses']:2} {stats['draws']:2}  {stats['goals_for']} :{stats['goals_against']:2} {stats['goal_difference']:2}")
+    def get_qualified_teams(self):
+        """ Get the qualified teams for the next stage. """
+        dsort = sorted(self.points.items(), key=lambda x: x[1]["points"], reverse=True) #sort by points
+        return [team for team, stats in dsort[2:]]
