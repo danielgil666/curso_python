@@ -1,96 +1,152 @@
 """
-Docstring for game_tournament.Group
+Docstring for game_tournament.Game
+Game class represents a game in the tournament. It has a name, a sport, and a list of teams.
 """
 import random
+import json
 from Team import Team
-from Game import Game
+from Sport import Sport
+from Athlete import Athlete
 
-class Group:
-    """ Group class represents a group in the tournament. It has a name and a list of teams. """
-    def __init__(self, name):
-        """ Custom constructor for Group class. """
-        self.name = name
-        self.teams = []
-        self.games = []
-        self.points = {}
-    def add_team(self, team):
-        """ Add a team to the group. """
-        if isinstance(team, Team):
-            self.teams.append(team)
-            self.points[team] = {"points": 0, "wins": 0, "losses": 0, "draws": 0, "goals_for": 0, "goals_against": 0, "goal_difference": 0} # win = 3 points, draw = 1 point, loss = 0 points
-        else:
-            raise ValueError("Only Team objects can be added as a team.")
-    def add_games(self):
-        """ Add games for the group. """
-        for i in range(len(self.teams)):
-            for j in range(i + 1, len(self.teams)):
-                game = Game(self.teams[i], self.teams[j])
-                self.games.append(game)
-    def __str__(self):
-        """ String representation of the Group class. """
-        return f"Group: {self.name}, Teams: {len(self.teams)}"
-    def __repr__(self):
-        """ String representation of the Group class. """
-        return f"Group(name={self.name}, teams={repr(self.teams)})"
-    def to_json(self):      
-        """ Convert the Group object to a JSON string. """
-        return {
-            "name": self.name,
-            "teams": [team.to_json() for team in self.teams]
+
+class Game:
+    """ Game class represents a game in the tournament. It has two teams and a score"""
+
+    def __init__(self, A: Team, B: Team):
+        """ Custom constructor for Game class. """
+        self.set_team(A, "local")
+        self.set_team(B, "visitor")
+        self.score = {
+            A.name: 0, B.name: 0
         }
-    def display_group(self):
-        """ Display the group. """
-        print(f"Group: {self.name}")
-        for team in self.teams:
-            print(f"  {team}")
-    def display_group_games(self):
-        """ Display the group games. """
-        print(f"Group: {self.name}")
-        for game in self.games:
-            print(f"  {game}")
-    def play_group_games(self):
-        """ Play the group games. """
-        for game in self.games:
-            game.play()
-            if game.score[game.team_a.name] > game.score[game.team_b.name]:
-                self.points[game.team_a]["points"] += 3
-                self.points[game.team_a]["wins"] += 1
-                self.points[game.team_b]["losses"] += 1
-                self.points[game.team_a]["goals_for"] += game.score[game.team_a.name]
-                self.points[game.team_a]["goals_against"] += game.score[game.team_b.name]
-                self.points[game.team_b]["goals_for"] += game.score[game.team_b.name]
-                self.points[game.team_b]["goals_against"] += game.score[game.team_a.name]
-                self.points[game.team_a]["goal_difference"] += game.score[game.team_a.name] - game.score[game.team_b.name]
-                self.points[game.team_b]["goal_difference"] += game.score[game.team_b.name] - game.score[game.team_a.name]
-            elif game.score[game.team_a.name] < game.score[game.team_b.name]:
-                self.points[game.team_b]["points"] += 3
-                self.points[game.team_b]["wins"] += 1
-                self.points[game.team_a]["losses"] += 1
-                self.points[game.team_b]["goals_for"] += game.score[game.team_b.name]
-                self.points[game.team_b]["goals_against"] += game.score[game.team_a.name]
-                self.points[game.team_a]["goals_for"] += game.score[game.team_a.name]
-                self.points[game.team_a]["goals_against"] += game.score[game.team_b.name]
-                self.points[game.team_b]["goal_difference"] += game.score[game.team_b.name] - game.score[game.team_a.name]
-                self.points[game.team_a]["goal_difference"] += game.score[game.team_a.name] - game.score[game.team_b.name]
+
+    def set_team(self, team, role):
+        """ Set a team for the game. """
+        if isinstance(team, Team):
+            if role == "local":
+                self.team_a = team
+            elif role == "visitor":
+                self.team_b = team
             else:
-                self.points[game.team_a]["points"] += 1
-                self.points[game.team_a]["draws"] += 1
-                self.points[game.team_b]["points"] += 1
-                self.points[game.team_b]["draws"] += 1
-                self.points[game.team_a]["goals_for"] += game.score[game.team_a.name]
-                self.points[game.team_a]["goals_against"] += game.score[game.team_b.name]
-                self.points[game.team_b]["goals_for"] += game.score[game.team_b.name]
-                self.points[game.team_b]["goals_against"] += game.score[game.team_a.name]
-                self.points[game.team_a]["goal_difference"] += game.score[game.team_a.name] - game.score[game.team_b.name]
-                self.points[game.team_b]["goal_difference"] += game.score[game.team_b.name] - game.score[game.team_a.name]
-    def display_standings(self):
-        """ Display the standings of the group. """
-        dsort = sorted(self.points.items(), key=lambda x: x[1]["points"], reverse=True) #sort by points
-        print(f"Group: {self.name}")
-        print(f"{'Team':<20} {'Pts':<2} {'W':<2} {'L':<2} {'D':<2} {'GF':<2} {'GA':<2} {'GD':<2}")
-        for team, stats in dsort:
-            print(f"{str(team.name):<20} {stats['points']:2} {stats['wins']:2} {stats['losses']:2} {stats['draws']:2}  {stats['goals_for']} :{stats['goals_against']:2} {stats['goal_difference']:2}")
-    def get_qualified_teams(self):
-        """ Get the qualified teams for the next stage. """
-        dsort = sorted(self.points.items(), key=lambda x: x[1]["points"], reverse=True) #sort by points
-        return [team for team, stats in dsort[2:]]
+                raise ValueError("Role must be 'local' or 'visitor'.")
+        else:
+            raise ValueError("Only Team objects can be set as a team.")
+
+    def play(self):
+        """ Simulate playing the game by randomly assigning scores to each team. """
+        self.score[self.team_a.name] = random.randint(
+            0, Sport.max_score[self.team_a.sport.name])
+        self.score[self.team_b.name] = random.randint(
+            0, Sport.max_score[self.team_b.sport.name])
+        if self.score[self.team_a.name] > self.score[self.team_b.name]:
+            self.winner = self.team_a
+            self.loser = self.team_b
+        elif self.score[self.team_a.name] < self.score[self.team_b.name]:
+            self.winner = self.team_b
+            self.loser = self.team_a
+        else:
+            self.winner = None
+            self.loser = None
+
+    def __str__(self):
+        """ String representation of the Game class. """
+        a = self.score[self.team_a.name]
+        b = self.score[self.team_b.name]
+        return f"{self.team_a.name} vs {self.team_b.name} - Score: {a}:{b}"
+
+    def __repr__(self):
+        """ String representation of the Game class. """
+        return f"Game(team_a={repr(self.team_a)}, team_b={repr(self.team_b)}, score={self.score})"
+
+    def to_json(self):
+        """ Convert the Game object to a JSON string. """
+        return {
+            "team_a": self.team_a.to_json(),
+            "team_b": self.team_b.to_json(),
+            "score": self.score
+        }
+
+
+def a_game():
+    """ Example usage of the Game class. """
+    players_mex = ['Chicharito', 'Piojo', 'Guardado',
+                   'Hector Moreno',
+                   'Rafa Marquez', 'Salcido', 'Vela', 'Dos Santos', 'Herrera', 'Layun', 'Corona']
+    players_arg = ['Messi', 'Di Maria',
+                   'Aguero', 'Higuain',
+                   'Mascherano',
+                   'Biglia', 'Dybala', 'Paredes', 'Tagliafico', 'Otamendi', 'Zabaleta']
+    sport = Sport("Futbol", 11, "FIFA")
+    team_mex = Team("Mexico", sport)
+    team_arg = Team("Argentina", sport)
+    for player in players_mex:
+        team_mex.add_athlete(Athlete(player))
+    for player in players_arg:
+        team_arg.add_athlete(Athlete(player))
+    game = Game(team_mex, team_arg)
+    game_string = game.to_json()
+    return game_string
+
+
+def save_game_to_json(game_data, filename):
+    """ Save the game object to a JSON file. """
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(game_data, f, indent=4)
+
+
+def a_tournament():
+    """ Example usage of the Game class. """
+    players_mex = ['Chicharito', 'Piojo', 'Guardado', 'Hector Moreno',
+                   'Rafa Marquez', 'Salcido', 'Vela', 'Dos Santos', 'Herrera', 'Layun', 'Corona']
+    players_arg = ['Messi', 'Di Maria', 'Aguero', 'Higuain', 'Mascherano',
+                   'Biglia', 'Dybala', 'Paredes', 'Tagliafico', 'Otamendi', 'Zabaleta']
+    players_peru = ['Guerrero', 'Carrillo', 'Flores', 'Yotun', 'Cueva',
+                    'Tapia', 'Advincula', 'Trauco', 'Araujo', 'Garcia', 'Gallese']
+    players_france = ['Mbappe', 'Griezmann', 'Pogba', 'Kante', 'Varane',
+                      'Lloris', 'Hernandez', 'Pavard', 'Matuidi', 'Dembele', 'Coman']
+    players_spain = ['Ramos', 'Iniesta', 'Xavi', 'Pique', 'Busquets',
+                     'Alba', 'Isco', 'Morata', 'Silva', 'Asensio', 'De Gea']
+    players_brazil = ['Neymar', 'Coutinho',
+                      'Firmino',
+                      'Casemiro', 'Alisson',
+                      'Thiago Silva', 'Marquinhos',
+                      'Willian', 'Gabriel Jesus', 'Fernandinho', 'Danilo']
+    players_italia = ['Buffon', 'Chiellini', 'Bonucci', 'Donnarumma', 'Insigne',
+                      'Bernardeschi', 'Verratti', 'Jorginho', 'Chiesa', 'Belotti', 'Immobile']
+    players_japan = ['Kagawa', 'Honda', 'Okazaki', 'Nagatomo', 'Yoshida',
+                     'Hasebe', 'Inui', 'Shibasaki', 'Kawashima', 'Muto', 'Osako']
+    sport = Sport("Futbol", 11, "FIFA")
+    team_mex = Team("Mexico", sport)
+    team_arg = Team("Argentina", sport)
+    team_peru = Team("Peru", sport)
+    team_france = Team("France", sport)
+    team_spain = Team("Spain", sport)
+    team_brazil = Team("Brazil", sport)
+    team_italia = Team("Italia", sport)
+    team_japan = Team("Japan", sport)
+    for player in players_mex:
+        team_mex.add_athlete(Athlete(player))
+    for player in players_arg:
+        team_arg.add_athlete(Athlete(player))
+    for player in players_peru:
+        team_peru.add_athlete(Athlete(player))
+    for player in players_france:
+        team_france.add_athlete(Athlete(player))
+    for player in players_spain:
+        team_spain.add_athlete(Athlete(player))
+    for player in players_brazil:
+        team_brazil.add_athlete(Athlete(player))
+    for player in players_italia:
+        team_italia.add_athlete(Athlete(player))
+    for player in players_japan:
+        team_japan.add_athlete(Athlete(player))
+    tournament_list = [team_mex, team_arg,
+                       team_peru, team_france,
+                       team_spain, team_brazil, team_italia, team_japan]
+    return [team.to_json() for team in tournament_list]
+
+if __name__ == "__main__":
+    string_game = a_tournament()
+    print(string_game)
+    save_game_to_json(string_game, "tournament.json")
+    print(string_game)

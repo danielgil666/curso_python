@@ -17,7 +17,7 @@ class Sport:
         self.league = league
         self.num_players = num_players
 
-    def add_name(self, name):
+    def adSd_name(self, name):
         """ Add a name to the sport. """
         if name in self.max_score:
             self.name = name
