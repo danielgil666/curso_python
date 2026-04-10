@@ -28,7 +28,7 @@ def load_books(filename: str):
         with open(filename, "r", encoding="utf-8-sig") as file:
             reader = csv.reader(file, delimiter=',')
             
-            # NOTA: No usamos next(reader) porque tu archivo NO tiene encabezados
+            # NOTA: No usamos next(reader) porque el archivo NO tiene encabezados
             for row in reader:
                 if len(row) >= 7:
                     books.append(Book(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
