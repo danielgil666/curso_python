@@ -83,6 +83,19 @@ def buscar_palabras(frases:list, frase_a_buscar:str)->list:
             frases_encontradas.append(frase)
     return frases_encontradas
 
+def buscar_palabras_ratio(frases:list, frase_a_buscar:str, umbral:float=0.50)->list:
+    """ Busca una frase en una lista de frases """
+    frases_encontradas = []
+    frase_a_buscar = frase_a_buscar.lower()
+    for frase in frases:
+        frase_lower = frase.frase.lower()
+        ratio = Levenshtein.ratio(frase_lower, frase_a_buscar)
+        if ratio >=umbral:
+            frase.ratio = ratio
+            frases_encontradas.append(frase)
+    return frases_encontradas
+
+
 if __name__ == "__main__":
     frases = carga_archivo_csv("frases_consolidadas.csv")
     #for frase in frases[0:5]:

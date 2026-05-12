@@ -1,5 +1,5 @@
-from flask import Flask, render_template
-from frases_celebres import Frase, carga_archivo_csv, crea_diccionario_titulos, buscar_palabras
+from flask import Flask, render_template, request
+from frases_celebres import Frase, carga_archivo_csv, crea_diccionario_titulos, buscar_palabras, buscar_palabras_ratio
 
 app = Flask(__name__)
 
@@ -14,9 +14,15 @@ def index():
 def pelicula():
     return render_template("pelicula.html")
 
-@app.route('/frase')
+@app.route('/frase', methods=['GET', 'POST'])
 def frase():
-    return render_template("frase.html")
+    if request.method == 'POST':
+        frase = request.form['frase']
+        umbral = float(request.form['umbral'])
+        frases_encontradas = buscar_palabras_ratio(frases, frase, umbral)
+        return render_template("frases.html", frases=frases_encontradas)
+    else:
+        return render_template("frases.html", frases=frases)
 
 if __name__ == "__main__":
     app.run(debug=True) 
