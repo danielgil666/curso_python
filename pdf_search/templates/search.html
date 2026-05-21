@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultados de Búsqueda{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold text-dark">🔍 Resultados de la Búsqueda</h2>
+        <p class="text-muted">Mostrando coincidencias para: <strong class="text-primary">"{{ query }}"</strong></p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 p-3 sticky-top" style="top: 20px;">
+            <h5 class="fw-bold text-secondary mb-3">🎛️ Filtro de Similitud</h5>
+            <form action="{{ url_for('search') }}" method="GET">
+                <input type="hidden" name="q" value="{{ query }}">
+                
+                <label for="similarityRange" class="form-label d-flex justify-content-between">
+                    <span>Mínima Coincidencia:</span>
+                    <span id="rangeValue" class="fw-bold text-primary">0.50</span>
+                </label>
+                <input type="range" class="form-range" min="0" max="1" step="0.05" id="similarityRange" name="min_sim" value="0.50" oninput="updateRangeLabel(this.value)">
+                
+                <div class="d-flex justify-content-between small text-muted mb-3">
+                    <span>0 (Parecido)</span>
+                    <span>1 (Idéntico)</span>
+                </div>
+                
+                <button type="submit" class="btn btn-sm btn-outline-primary w-100 fw-bold">Filtrar Resultados</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mb-3 border-start border-4 border-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-success text-white px-3 py-2 fw-bold">92.5% Similitud</span>
+                    <small class="text-muted">Año: 2026</small>
+                </div>
+                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">
+                    📍 <strong>Origen:</strong> <a href="https://www.unison.mx/gaceta-oficial/" target="_blank" class="text-decoration-none">https://www.unison.mx/gaceta-oficial/ACTA-047.pdf</a>
+                </h6>
+                <p class="card-text bg-light p-3 rounded text-dark" style="font-family: monospace; font-size: 0.9rem;">
+                    "...se aprueba por unanimidad el nuevo plan de estudios para la carrera de Ingeniería en Sistemas de la Información en la reunión del consejo..."
+                </p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 mb-3 border-start border-4 border-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-warning text-dark px-3 py-2 fw-bold">64.0% Similitud</span>
+                    <small class="text-muted">Año: 2025</small>
+                </div>
+                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">
+                    📍 <strong>Origen:</strong> <a href="https://www.unison.mx/gaceta-oficial/" target="_blank" class="text-decoration-none">https://www.unison.mx/gaceta-oficial/ACTA-032.pdf</a>
+                </h6>
+                <p class="card-text bg-light p-3 rounded text-dark" style="font-family: monospace; font-size: 0.9rem;">
+                    "...los sistemas de información automatizados presentados por el departamento técnico requieren una validación de datos de manera semestral..."
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateRangeLabel(val) {
+    document.getElementById('rangeValue').innerText = parseFloat(val).toFixed(2);
+}
+</script>
+{% endblock %}
