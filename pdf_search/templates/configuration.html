@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Configuración - Agregar URLs{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold text-dark">⚙️ Configuración del Sistema</h2>
+        <p class="text-muted">Administra las direcciones web que el sistema utilizará para buscar y descargar documentos PDF.</p>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 p-4">
+            <h5 class="card-title fw-bold mb-3 text-secondary">Agregar Nueva URL</h5>
+            <form action="{{ url_for('configuration') }}" method="POST">
+                <div class="input-group">
+                    <input type="url" name="nueva_url" class="form-control form-control-lg" placeholder="https://ejemplo.com/documentos" required>
+                    <button class="btn btn-primary px-4 fw-bold" type="submit">ADD</button>
+                </div>
+                <small class="form-text text-muted mt-2 d-block">Asegúrate de incluir el protocolo http:// o https:// completo.</small>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold text-secondary py-3">
+                🔗 Sitios Web Configurados
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" style="width: 10%">ID</th>
+                            <th scope="col" style="width: 90%">Dirección URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td><span class="text-primary">https://www.unison.mx/gaceta-oficial/</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td><span class="text-primary">https://www.transparencia.sonora.gob.mx/actas/</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

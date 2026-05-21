@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Scrapper - Extracción de PDFs{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold text-dark">🕷️ Extractor de Documentos (Scrapper)</h2>
+        <p class="text-muted">Monitorea el estado de indexación de cada sitio web y lanza el proceso de extracción de archivos PDF.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold text-secondary py-3">
+                📋 Panel de Control de Fuentes
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" style="width: 50%">Sitio Web / Archivos Descargados</th>
+                            <th scope="col" style="width: 25%">Estatus</th>
+                            <th scope="col" style="width: 25%" class="text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-primary">https://www.unison.mx/gaceta-oficial/</div>
+                                <div class="mt-2 ps-3 border-start border-2 border-secondary">
+                                    <small class="text-muted d-block">📄 ACTA-047-16-ENERO-2026.pdf</small>
+                                    <small class="text-muted d-block">📄 ACTA-048-20-FEBRERO-2026.pdf</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">scrappeada</span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-secondary px-3" disabled>Re-Scrapear</button>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-primary">https://www.transparencia.sonora.gob.mx/actas/</div>
+                                <div class="mt-1 ps-3">
+                                    <small class="text-warning-emphasis italic">Ningún archivo descargado aún.</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2">no escrapeada</span>
+                            </td>
+                            <td class="text-center">
+                                <form action="#" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-primary px-3 fw-bold">Iniciar Escrapeo</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
