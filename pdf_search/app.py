@@ -1,29 +1,57 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
+import database as db
+from pdf_functions import scrape_and_process, buscar_palabras
+import threading
 
 app = Flask(__name__)
 
-# Ruta para la pantalla de Inicio (Home)
+# Inicializar BD al arrancar
+with app.app_context():
+    db.init_db()
+
 @app.route('/')
 def home():
-    return render_template('home.html')
+    total_docs, total_words, docs_by_year = db.get_dashboard_stats()
+    return render_template('home.html', 
+                           total_docs=total_docs, 
+                           total_words=total_words, 
+                           docs_by_year=docs_by_year)
 
-# Ruta para la pantalla del Scrapper
-@app.route('/scrapper')
+@app.route('/scrapper', methods=['GET', 'POST'])
 def scrapper():
-    return render_template('scrapper.html')
+    if request.method == 'POST':
+        url_id = request.form.get('url_id')
+        url_string = request.form.get('url_string')
+        # Lanzar el scraper en un hilo para no congelar la página web
+        thread = threading.Thread(target=scrape_and_process, args=(url_id, url_string))
+        thread.start()
+        return redirect(url_for('scrapper'))
+        
+    # Obtener estatus de las URLs para el GET
+    urls = db.get_all_urls()
+    return render_template('scrapper.html', urls=urls)
 
-# Ruta para la pantalla de Configuración
-@app.route('/configuration')
+@app.route('/configuration', methods=['GET', 'POST'])
 def configuration():
-    return render_template('configuration.html')
+    if request.method == 'POST':
+        nueva_url = request.form.get('nueva_url')
+        if nueva_url:
+            db.add_url(nueva_url)
+        return redirect(url_for('configuration'))
+        
+    urls = db.get_all_urls()
+    return render_template('configuration.html', urls=urls)
 
-# Ruta para la pantalla de Resultados de Búsqueda
 @app.route('/search')
 def search():
-    # Captura lo que el usuario ponga en la barra de navegación
     query = request.args.get('q', '')
-    return render_template('search.html', query=query)
+    min_sim = float(request.args.get('min_sim', 0.50)) # 0.50 por defecto
+    
+    resultados = []
+    if query:
+        resultados = buscar_palabras(query, min_sim)
+        
+    return render_template('search.html', query=query, resultados=resultados, min_sim=min_sim)
 
 if __name__ == '__main__':
-    # debug=True permite ver cambios en tiempo real sin reiniciar el servidor
     app.run(debug=True, port=5000)
