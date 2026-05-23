@@ -8,7 +8,7 @@ Proyecto desarrollado para la materia de Desarrollo de Sistemas, Universidad de 
 
 ## 👥 Integrantes del Equipo
 * **José Emmanuel Gallegos Mazariego**
-* **Daniel Gil**
+* **Daniel Gil Cota**
 
 ---
 
