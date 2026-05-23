@@ -26,40 +26,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-primary">https://www.unison.mx/gaceta-oficial/</div>
-                                <div class="mt-2 ps-3 border-start border-2 border-secondary">
-                                    <small class="text-muted d-block">📄 ACTA-047-16-ENERO-2026.pdf</small>
-                                    <small class="text-muted d-block">📄 ACTA-048-20-FEBRERO-2026.pdf</small>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">scrappeada</span>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-sm btn-outline-secondary px-3" disabled>Re-Scrapear</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-primary">https://www.transparencia.sonora.gob.mx/actas/</div>
-                                <div class="mt-1 ps-3">
-                                    <small class="text-warning-emphasis italic">Ningún archivo descargado aún.</small>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2">no escrapeada</span>
-                            </td>
-                            <td class="text-center">
-                                <form action="#" method="POST" class="d-inline">
-                                    <button type="submit" class="btn btn-sm btn-primary px-3 fw-bold">Iniciar Escrapeo</button>
-                                </form>
-                            </td>
-                        </tr>
-
+                        {% if urls %}
+                            {% for url in urls %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-primary">{{ url.url }}</div>
+                                    
+                                    <div class="mt-2 ps-3 border-start border-2 border-secondary">
+                                        {% if url.documents %}
+                                            {% for doc in url.documents %}
+                                                <small class="text-muted d-block">📄 {{ doc }}</small>
+                                            {% endfor %}
+                                        {% else %}
+                                            <small class="text-warning-emphasis fst-italic">Ningún archivo descargado aún.</small>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if url.status == 'scrappeada' %}
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">scrappeada</span>
+                                    {% else %}
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-2">{{ url.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <form action="{{ url_for('scrapper') }}" method="POST" class="d-inline">
+                                        <input type="hidden" name="url_id" value="{{ url.id }}">
+                                        <input type="hidden" name="url_string" value="{{ url.url }}">
+                                        
+                                        {% if url.status == 'scrappeada' %}
+                                            <button type="submit" class="btn btn-sm btn-outline-secondary px-3">Re-Scrapear</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-sm btn-primary px-3 fw-bold">Iniciar Escrapeo</button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-4">
+                                    No hay direcciones web configuradas en el sistema. Ve a la sección de <a href="{{ url_for('configuration') }}">Configuration</a> para añadir una.
+                                </td>
+                            </tr>
+                        {% endif %}
                     </tbody>
                 </table>
             </div>

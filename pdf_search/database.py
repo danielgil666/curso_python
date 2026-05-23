@@ -67,3 +67,22 @@ def get_dashboard_stats():
     docs_by_year = conn.execute('SELECT year, COUNT(*) as count FROM documents GROUP BY year ORDER BY year DESC').fetchall()
     conn.close()
     return total_docs, total_words, docs_by_year
+
+def get_urls_with_documents():
+    conn = get_db_connection()
+    # Obtenemos URLs
+    urls = conn.execute('SELECT * FROM urls').fetchall()
+    
+    # Obtenemos todos los documentos
+    docs = conn.execute('SELECT id, url_id, filename FROM documents').fetchall()
+    conn.close()
+    
+    # Armamos un diccionario para agrupar fácilmente en Jinja
+    resultado = []
+    for url in urls:
+        url_dict = dict(url)
+        # Filtramos los documentos que pertenecen a esta URL
+        url_dict['documents'] = [d['filename'] for d in docs if d['url_id'] == url['id']]
+        resultado.append(url_dict)
+        
+    return resultado

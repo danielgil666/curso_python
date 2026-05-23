@@ -22,14 +22,14 @@ def scrapper():
     if request.method == 'POST':
         url_id = request.form.get('url_id')
         url_string = request.form.get('url_string')
-        # Lanzar el scraper en un hilo para no congelar la página web
+        # Hilo en segundo plano para no congelar la app
         thread = threading.Thread(target=scrape_and_process, args=(url_id, url_string))
         thread.start()
         return redirect(url_for('scrapper'))
         
-    # Obtener estatus de las URLs para el GET
-    urls = db.get_all_urls()
-    return render_template('scrapper.html', urls=urls)
+    # Cambio aquí: Usamos la nueva función
+    urls_con_docs = db.get_urls_with_documents() 
+    return render_template('scrapper.html', urls=urls_con_docs)
 
 @app.route('/configuration', methods=['GET', 'POST'])
 def configuration():

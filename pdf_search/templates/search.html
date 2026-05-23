@@ -19,9 +19,9 @@
                 
                 <label for="similarityRange" class="form-label d-flex justify-content-between">
                     <span>Mínima Coincidencia:</span>
-                    <span id="rangeValue" class="fw-bold text-primary">0.50</span>
+                    <span id="rangeValue" class="fw-bold text-primary">{{ min_sim }}</span>
                 </label>
-                <input type="range" class="form-range" min="0" max="1" step="0.05" id="similarityRange" name="min_sim" value="0.50" oninput="updateRangeLabel(this.value)">
+                <input type="range" class="form-range" min="0" max="1" step="0.05" id="similarityRange" name="min_sim" value="{{ min_sim }}" oninput="updateRangeLabel(this.value)">
                 
                 <div class="d-flex justify-content-between small text-muted mb-3">
                     <span>0 (Parecido)</span>
@@ -34,35 +34,39 @@
     </div>
 
     <div class="col-md-8">
-        <div class="card shadow-sm border-0 mb-3 border-start border-4 border-success">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="badge bg-success text-white px-3 py-2 fw-bold">92.5% Similitud</span>
-                    <small class="text-muted">Año: 2026</small>
-                </div>
-                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">
-                    📍 <strong>Origen:</strong> <a href="https://www.unison.mx/gaceta-oficial/" target="_blank" class="text-decoration-none">https://www.unison.mx/gaceta-oficial/ACTA-047.pdf</a>
-                </h6>
-                <p class="card-text bg-light p-3 rounded text-dark" style="font-family: monospace; font-size: 0.9rem;">
-                    "...se aprueba por unanimidad el nuevo plan de estudios para la carrera de Ingeniería en Sistemas de la Información en la reunión del consejo..."
-                </p>
-            </div>
-        </div>
+        {% if resultados %}
+            {% for res in resultados %}
+            <div class="card shadow-sm border-0 mb-3 border-start border-4 {% if res.similitud|float >= 75 %}border-success{% elif res.similitud|float >= 40 %}border-warning{% else %}border-danger{% endif %}">
+                <div class="card-body">
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge {% if res.similitud|float >= 75 %}bg-success text-white{% elif res.similitud|float >= 40 %}bg-warning text-dark{% else %}bg-danger text-white{% endif %} px-3 py-2 fw-bold">
+                            {{ res.similitud }}% Similitud en coincidencia
+                        </span>
+                        <small class="text-muted">Año: {{ res.year }}</small>
+                    </div>
 
-        <div class="card shadow-sm border-0 mb-3 border-start border-4 border-warning">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="badge bg-warning text-dark px-3 py-2 fw-bold">64.0% Similitud</span>
-                    <small class="text-muted">Año: 2025</small>
+                    <h6 class="text-muted mb-2" style="font-size: 0.85rem;">
+                        📄 <strong>Archivo:</strong> {{ res.filename }}<br>
+                        🔗 <strong>URL Origen:</strong> <a href="{{ res.url_origen }}" target="_blank" class="text-decoration-none text-break">{{ res.url_origen }}</a>
+                    </h6>
+
+                    <div class="mt-3">
+                        <span class="badge bg-light text-secondary border mb-1">Bloque de contexto encontrado:</span>
+                        <p class="card-text bg-light p-3 rounded text-dark border-start border-2 border-secondary" style="font-family: monospace; font-size: 0.9rem;">
+                            "...{{ res.block }}..."
+                        </p>
+                    </div>
+
                 </div>
-                <h6 class="text-muted mb-2" style="font-size: 0.85rem;">
-                    📍 <strong>Origen:</strong> <a href="https://www.unison.mx/gaceta-oficial/" target="_blank" class="text-decoration-none">https://www.unison.mx/gaceta-oficial/ACTA-032.pdf</a>
-                </h6>
-                <p class="card-text bg-light p-3 rounded text-dark" style="font-family: monospace; font-size: 0.9rem;">
-                    "...los sistemas de información automatizados presentados por el departamento técnico requieren una validación de datos de manera semestral..."
-                </p>
             </div>
-        </div>
+            {% endfor %}
+        {% else %}
+            <div class="card shadow-sm border-0 p-5 text-center text-muted">
+                <h4 class="fw-bold text-secondary mb-2">No se encontraron coincidencias</h4>
+                <p class="mb-0">Prueba reduciendo el nivel de coincidencia en el slider o intentando con otra palabra o frase técnica.</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 
