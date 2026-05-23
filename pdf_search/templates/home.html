@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Panel de Estadísticas{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h1 class="display-5 fw-bold text-dark">Dashboard del Sistema</h1>
+        <p class="text-muted">Estado actual de los documentos indexados en la base de datos.</p>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-primary text-white h-100">
+            <div class="card-body text-center py-4">
+                <h3 class="card-title h5 opacity-75">Total Documentos Indexados</h3>
+                <p class="display-4 fw-bold my-2">{{ total_docs }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-success text-white h-100">
+            <div class="card-body text-center py-4">
+                <h3 class="card-title h5 opacity-75">Total Palabras Indexadas</h3>
+                <p class="display-4 fw-bold my-2">{{ total_words }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white fw-bold text-secondary py-3">
+                📂 Documentos por Año
+            </div>
+            <ul class="list-group list-group-flush">
+                {% if docs_by_year %}
+                    {% for row in docs_by_year %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Año {{ row.year }}
+                        <span class="badge bg-secondary rounded-pill">{{ row.count }} documentos</span>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item text-center text-muted py-4">
+                        Aún no hay documentos indexados. Ve a la sección Scrapper.
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

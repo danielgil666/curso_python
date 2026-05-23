@@ -1,0 +1,47 @@
+# =========================
+# Entorno de Python y Flask
+# =========================
+# Ignorar el entorno virtual (muy importante)
+venv/
+env/
+.venv/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Variables de entorno y secretos
+.env
+.flaskenv
+
+# =========================
+# Base de Datos SQLite
+# =========================
+# No subir la base de datos local para que cada quien tenga la suya
+*.sqlite3
+*.sqlite
+*.db
+database/searcher.db
+
+# =========================
+# Archivos del Proyecto
+# =========================
+# Ignorar los PDFs descargados (evita saturar el repo)
+downloaded_pdfs/
+
+# =========================
+# Archivos del Sistema (macOS)
+# =========================
+# Ignorar metadatos de carpetas en Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+
+
+
+
+
+

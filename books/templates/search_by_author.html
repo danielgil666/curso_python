@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Libra Online Library - Search by Author{% endblock %}
+{% block body %}
+<h1>Search by Author</h1>
+<form action="/search_by_author" method="post">
+    <label for="author">Author:</label>
+    <input type="text" id="author" name="author">
+    <input type="submit" value="Search">
+</form>
+<ul>
+    {% for book in books_list %}
+    <li><a href="/book/{{ book.id }}">{{ book.title }}</a> by {{ book.author }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
